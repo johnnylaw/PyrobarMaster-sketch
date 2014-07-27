@@ -32,12 +32,12 @@ uint8_t ledPins[] = {2, 3, 4, 5, 6, 7};
 PyrobarFireCannon fireCannons[NUM_FIRE_CANNONS] = {PyrobarFireCannon(firePins[0]), PyrobarFireCannon(firePins[1]), PyrobarFireCannon(firePins[2])};
 static PyrobarLightMap lightMap = PyrobarLightMap();
 static PyrobarPulseLightSet pulseLightSet = PyrobarPulseLightSet();
+static PyrobarFireSequence fireSequence = PyrobarFireSequence();
 
 static PyrobarLightMaster MasterCtrl = PyrobarLightMaster(&lightMap, &pulseLightSet, ledPins);
-static PyrobarHTTPRequestHandler PBHTTPRequestHandler = PyrobarHTTPRequestHandler(&lightMap);
+static PyrobarHTTPRequestHandler PBHTTPRequestHandler = PyrobarHTTPRequestHandler(&lightMap, &fireSequence);
 static PyrobarUDPRequestHandler PBUDPRequestHandler = PyrobarUDPRequestHandler(&lightMap, &pulseLightSet);
 
-static PyrobarFireSequence fireSequence = PyrobarFireSequence();
 static PyrobarFireController FireCtrl = PyrobarFireController(NUM_FIRE_CANNONS, firePins, &fireSequence);
 
 uint8_t freqBfrPos;
