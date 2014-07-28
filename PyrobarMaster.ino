@@ -76,6 +76,10 @@ void loop() {
   } else {
     adjustCannons();
   }
+  
+  MasterCtrl.calculateBufferPositions(&freqBfrPos, &sndBfrPos);
+  MasterCtrl.sendLightProgramInfo(freqBfrPos, sndBfrPos);
+
 
   delay(50);
 }
