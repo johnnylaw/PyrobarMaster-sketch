@@ -81,7 +81,7 @@ void loop() {
   MasterCtrl.sendLightProgramInfo(freqBfrPos, sndBfrPos);
 
 
-  delay(50);
+  delay(10);
 }
 
 void printDiagnostics() {
