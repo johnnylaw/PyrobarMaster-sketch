@@ -11,13 +11,6 @@
 #include "PyrobarPulseLightSet.h"
 #include "PyrobarLightMap.h"
 
-#define UDP_FIRE_ON 0
-#define UDP_FIRE_OFF 1
-#define UDP_PULSE_LIGHT_ON 2
-#define UDP_PULSE_LIGHTS_DECAY_ON 3
-#define NUM_FIRE_CANNONS 3
-
-
 uint8_t mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
 IPAddress ip(192, 168, 1, 101);
 unsigned int localPortUDP = 8888;
@@ -26,21 +19,21 @@ EthernetUDP Udp;
 
 unsigned char packetBuffer[UDP_TX_PACKET_MAX_SIZE];
 
-uint8_t firePins[NUM_FIRE_CANNONS] = {52, 48, 44};
+uint8_t firePins[CANNON_COUNT] = {52, 48, 44};
 uint8_t ledPins[] = {2, 3, 4, 5, 6, 7};
 uint8_t freqBfrPos;
 uint8_t sndBfrPos;
 
-PyrobarFireCannon fireCannons[NUM_FIRE_CANNONS] = {PyrobarFireCannon(firePins[0]), PyrobarFireCannon(firePins[1]), PyrobarFireCannon(firePins[2])};
+PyrobarFireCannon fireCannons[CANNON_COUNT] = {PyrobarFireCannon(firePins[0]), PyrobarFireCannon(firePins[1]), PyrobarFireCannon(firePins[2])};
 static PyrobarLightMap lightMap = PyrobarLightMap();
 static PyrobarPulseLightSet pulseLightSet = PyrobarPulseLightSet();
 static PyrobarFireSequence fireSequence = PyrobarFireSequence();
 
 static PyrobarLightMaster MasterCtrl = PyrobarLightMaster(&lightMap, &pulseLightSet, ledPins);
 static PyrobarHTTPRequestHandler PBHTTPRequestHandler = PyrobarHTTPRequestHandler(&lightMap, &fireSequence);
-static PyrobarUDPRequestHandler PBUDPRequestHandler = PyrobarUDPRequestHandler(&lightMap, &pulseLightSet);
+static PyrobarUDPRequestHandler PBUDPRequestHandler = PyrobarUDPRequestHandler(&lightMap, &pulseLightSet, &fireSequence);
 
-static PyrobarFireController FireCtrl = PyrobarFireController(NUM_FIRE_CANNONS, firePins, &fireSequence);
+static PyrobarFireController FireCtrl = PyrobarFireController(CANNON_COUNT, firePins, &fireSequence);
 
 EthernetServer server(80);
 
