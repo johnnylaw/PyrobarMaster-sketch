@@ -26,8 +26,10 @@ EthernetUDP Udp;
 
 unsigned char packetBuffer[UDP_TX_PACKET_MAX_SIZE];
 
-uint8_t firePins[NUM_FIRE_CANNONS] = {25, 26, 27};
+uint8_t firePins[NUM_FIRE_CANNONS] = {52, 48, 44};
 uint8_t ledPins[] = {2, 3, 4, 5, 6, 7};
+uint8_t freqBfrPos;
+uint8_t sndBfrPos;
 
 PyrobarFireCannon fireCannons[NUM_FIRE_CANNONS] = {PyrobarFireCannon(firePins[0]), PyrobarFireCannon(firePins[1]), PyrobarFireCannon(firePins[2])};
 static PyrobarLightMap lightMap = PyrobarLightMap();
@@ -40,9 +42,6 @@ static PyrobarUDPRequestHandler PBUDPRequestHandler = PyrobarUDPRequestHandler(&
 
 static PyrobarFireController FireCtrl = PyrobarFireController(NUM_FIRE_CANNONS, firePins, &fireSequence);
 
-uint8_t freqBfrPos;
-uint8_t sndBfrPos;
-
 EthernetServer server(80);
 
 void setup() {
@@ -50,6 +49,7 @@ void setup() {
   Ethernet.begin(mac, ip);
   Udp.begin(localPortUDP);
   MasterCtrl.begin();
+  FireCtrl.begin();
   pinMode(38, INPUT);
 
   Serial.println(Ethernet.localIP());
@@ -69,17 +69,15 @@ void loop() {
     printDiagnostics();
   }
 
-  if (EthernetClient client = server.available()) {
-    killCannons();
-    if (_DEBUG) Serial.println("\nClient exists!");
-    PBHTTPRequestHandler.handleRequest(client);
-  } else {
-    adjustCannons();
+  if (!FireCtrl.play()) {
+    if (EthernetClient client = server.available()) {
+      if (_DEBUG) Serial.println("\nClient exists!");
+      PBHTTPRequestHandler.handleRequest(client);
+    } 
   }
   
   MasterCtrl.calculateBufferPositions(&freqBfrPos, &sndBfrPos);
   MasterCtrl.sendLightProgramInfo(freqBfrPos, sndBfrPos);
-
 
   delay(10);
 }
@@ -117,17 +115,3 @@ void printDiagnostics() {
   Serial.print(", Frequency: ");
   Serial.println(lightMap.frequency() * 1000.0);
 }
-
-
-void adjustCannons() {
-  for (int i = 0; i < NUM_FIRE_CANNONS; i++) {
-    fireCannons[i].adjust();
-  }
-}
-
-void killCannons() {
-  for (int i = 0; i < NUM_FIRE_CANNONS; i++) {
-    fireCannons[i].kill();
-  }
-}
-
