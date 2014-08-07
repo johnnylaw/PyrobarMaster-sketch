@@ -21,6 +21,8 @@ unsigned char packetBuffer[UDP_TX_PACKET_MAX_SIZE];
 
 uint8_t firePins[CANNON_COUNT] = {52, 48, 44};
 uint8_t ledPins[] = {2, 3, 4, 5, 6, 7};
+uint8_t digitalLedPins[] = {38};
+uint8_t soundLevelPin = A0;
 uint8_t freqBfrPos;
 uint8_t sndBfrPos;
 
@@ -29,7 +31,7 @@ static PyrobarLightMap lightMap = PyrobarLightMap();
 static PyrobarPulseLightSet pulseLightSet = PyrobarPulseLightSet();
 static PyrobarFireSequence fireSequence = PyrobarFireSequence();
 
-static PyrobarLightMaster MasterCtrl = PyrobarLightMaster(&lightMap, &pulseLightSet, ledPins);
+static PyrobarLightMaster MasterCtrl = PyrobarLightMaster(&lightMap, &pulseLightSet, ledPins, soundLevelPin);
 static PyrobarHTTPRequestHandler PBHTTPRequestHandler = PyrobarHTTPRequestHandler(&lightMap, &fireSequence);
 static PyrobarUDPRequestHandler PBUDPRequestHandler = PyrobarUDPRequestHandler(&lightMap, &pulseLightSet, &fireSequence);
 
@@ -43,7 +45,7 @@ void setup() {
   Udp.begin(localPortUDP);
   MasterCtrl.begin();
   FireCtrl.begin();
-  pinMode(38, INPUT);
+  pinMode(32, INPUT);
 
   Serial.println(Ethernet.localIP());
 }
@@ -58,7 +60,7 @@ void loop() {
     PBUDPRequestHandler.handleRequest(packetBuffer, packetSize);
   }
   
-  if(digitalRead(38) && _DEBUG) {
+  if(digitalRead(32) && _DEBUG) {
     printDiagnostics();
   }
 
