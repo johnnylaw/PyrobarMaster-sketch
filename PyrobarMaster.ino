@@ -19,10 +19,10 @@ EthernetUDP Udp;
 
 unsigned char packetBuffer[UDP_TX_PACKET_MAX_SIZE];
 
-uint8_t firePins[CANNON_COUNT] = {52, 48, 44};
-uint8_t ledPins[] = {2, 3, 4, 5, 6, 7};
-uint8_t digitalLedPins[] = {38};
-uint8_t soundLevelPin = A0;
+uint8_t firePins[CANNON_COUNT] = {37, 35, 33};
+uint8_t aerialSpotlightPin = 31;
+uint8_t craneSpotlightPin = 29;
+uint8_t soundLevelPin = 27;
 uint8_t freqBfrPos;
 uint8_t sndBfrPos;
 
@@ -30,7 +30,7 @@ static PyrobarLightMap lightMap = PyrobarLightMap();
 static PyrobarPulseLightSet pulseLightSet = PyrobarPulseLightSet();
 static PyrobarFireSequence fireSequence = PyrobarFireSequence();
 
-static PyrobarLightMaster MasterCtrl = PyrobarLightMaster(&lightMap, &pulseLightSet, ledPins, soundLevelPin);
+static PyrobarLightMaster MasterCtrl = PyrobarLightMaster(&lightMap, &pulseLightSet, soundLevelPin, aerialSpotlightPin, craneSpotlightPin);
 static PyrobarHTTPRequestHandler PBHTTPRequestHandler = PyrobarHTTPRequestHandler(&lightMap, &fireSequence);
 static PyrobarUDPRequestHandler PBUDPRequestHandler = PyrobarUDPRequestHandler(&lightMap, &pulseLightSet, &fireSequence);
 
