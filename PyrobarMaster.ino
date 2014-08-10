@@ -26,7 +26,6 @@ uint8_t soundLevelPin = A0;
 uint8_t freqBfrPos;
 uint8_t sndBfrPos;
 
-PyrobarFireCannon fireCannons[CANNON_COUNT] = {PyrobarFireCannon(firePins[0]), PyrobarFireCannon(firePins[1]), PyrobarFireCannon(firePins[2])};
 static PyrobarLightMap lightMap = PyrobarLightMap();
 static PyrobarPulseLightSet pulseLightSet = PyrobarPulseLightSet();
 static PyrobarFireSequence fireSequence = PyrobarFireSequence();
@@ -74,7 +73,7 @@ void loop() {
   MasterCtrl.calculateBufferPositions(&freqBfrPos, &sndBfrPos);
   MasterCtrl.sendLightProgramInfo(freqBfrPos, sndBfrPos);
 
-  delay(10);
+  delay(20);
 }
 
 void printDiagnostics() {
